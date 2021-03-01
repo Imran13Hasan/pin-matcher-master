@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="generate-input" class="form-control" type="text">
+                    <button id="generate-btn" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="number-input" class="form-control" type="text">
+                    <div class="numbers">
+                        <div id="button-container" class="calc-body">
+                            <div class="calc-button-row">
+                                <div class="button">7</div>
+                                <div class="button">8</div>
+                                <div class="button">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">4</div>
+                                <div class="button">5</div>
+                                <div class="button">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">1</div>
+                                <div class="button">2</div>
+                                <div class="button">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button"><</div>
+                                <div class="button">0</div>
+                                <div id="reset" class="button">C</div>
+                            </div>
+                                <div>
+                                    <button type="submit" id="submit-btn" class="submit-btn">Submit</button>
+                                    <p class="action-left">3 try left</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="notify-section">
+                    <p id="notify-blank" class="notify">❌Please enter a valid pin.</p>
+                    <p id="notify-wrong" class="notify">❌ Pin Didn't Match, Please try again.</p>
+                    <p id="notify-right" class="notify">✅ Pin Matched, Secret door is opening for you.</p>
+                </div>
+            </div>
+
+            <script>
+                document.getElementById('generate-btn').addEventListener('click', function () {
+                    var key = keyGenerator();
+                    document.getElementById('generate-input').value = key;
+                })
+
+
+                function keyGenerator() {
+                    const randomNumber = Math.random() * 10000;
+                    // const key = randomNumber.toFixed(0);
+                    const pin = (randomNumber + "").split(".")[0];
+
+                    if (pin.length === 4) {
+                        return pin;
+                    } else {
+                        return keyGenerator();
+                    }
+                }
+
+                const buttonContainer = document.getElementById('button-container');
+                buttonContainer.addEventListener('click', function (event) {
+                    const digit = event.target.innerHTML;
+                    if(isNaN(digit)){
+                        if(digit == 'C'){
+                            const keyPadDisplay = document.getElementById('number-input');
+                            keyPadDisplay.value = "";
+                        }
+                    }else{
+                        const numberInput = document.getElementById('number-input');
+                        numberInput.value = numberInput.value + digit;
+                    }
+                })
+                // var button = document.getElementsByClassName('button');
+                // var display = document.getElementById('number-input');
+                // for (let i = 0; i < button.length; i++) {
+                //     let num = button[i];
+                //     num.addEventListener('click', function () {
+                //         return display.value = display.value + num.innerHTML;
+                //     })
+                // }
+
+                // document.getElementById('reset').addEventListener('click', function () {
+                //     display.value = "";
+                // })
+
+                document.getElementById('submit-btn').addEventListener('click', function () {
+                    const generateDisplay = document.getElementById('generate-input').value;
+                    const keyPadDisplay = document.getElementById('number-input').value;
+
+                    if (generateDisplay == "" || keyPadDisplay == "") {
+                        matchingAlert('block', 'none', 'none');
+                    } else if (generateDisplay == keyPadDisplay && generateDisplay !== "" && keyPadDisplay !== "") {
+                        matchingAlert('none', 'block', 'none');
+                    } else {
+                        matchingAlert('none', 'none', 'block');
+                    }
+                })
+
+                function matchingAlert(invalid, correct, incorrect){
+                        document.getElementById('notify-blank').style.display = invalid;
+                        document.getElementById('notify-right').style.display = correct;
+                        document.getElementById('notify-wrong').style.display = incorrect;
+                }
+
+            </script>
+</body>
+
+</html>
